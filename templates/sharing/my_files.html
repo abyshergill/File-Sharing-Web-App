@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% block title %}My files{% endblock %}
+{% load fileshare %}
+{% block content %}
+<div class="card">
+  <div class="card-head"><h1>My files</h1>{% if user_can_upload %}<a class="btn primary" href="{% url 'sharing:upload' %}">Upload</a>{% endif %}</div>
+  {% if page.object_list %}
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>File</th><th>Size</th><th>Uploaded</th><th>Downloads</th><th>Share code</th><th></th></tr></thead>
+    <tbody>
+    {% for f in page %}
+      <tr>
+        <td><a href="{% url 'sharing:file_detail' f.share_code %}">{{ f.original_name }}</a></td>
+        <td>{{ f.size|filesizeformat }}</td>
+        <td title="{{ f.created_at }}">{{ f.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ f.download_count }}</td>
+        <td><code>{{ f.share_code }}</code> <button class="btn tiny" data-copy="{{ f.share_code }}">Copy</button></td>
+        <td>
+          <form method="post" action="{% url 'sharing:delete_file' f.pk %}" class="inline" data-confirm="Delete {{ f.original_name }}?">{% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn tiny danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% pagination page query %}
+  {% else %}<p class="muted">You haven’t uploaded anything yet.</p>{% endif %}
+</div>
+{% endblock %}

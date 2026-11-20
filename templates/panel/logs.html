@@ -1,0 +1,12 @@
+{% extends "panel/base.html" %}{% load fileshare %}{% block title %}Activity log{% endblock %}
+{% block panel %}
+<div class="card">
+  <h1>Activity log</h1>
+  <form method="get" class="filters">
+    {{ form.q }} {{ form.action }} <button class="btn">Filter</button>
+    {% if request.GET %}<a href="{% url 'panel:logs' %}">Clear</a>{% endif %}
+  </form>
+  {% include "panel/_log_table.html" with logs=page.object_list %}
+  {% pagination page query %}
+</div>
+{% endblock %}

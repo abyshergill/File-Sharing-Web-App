@@ -1,0 +1,10 @@
+{% extends "panel/base.html" %}{% block title %}{{ title }}{% endblock %}
+{% block panel %}
+<div class="card narrow">
+  <h1>{{ title }}</h1>
+  <form method="post">{% csrf_token %}
+    {% include "partials/form.html" %}
+    <button class="btn primary">Save</button> <a href="{% url 'accounts:user_list' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

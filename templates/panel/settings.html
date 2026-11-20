@@ -1,0 +1,13 @@
+{% extends "panel/base.html" %}{% block title %}Access settings{% endblock %}
+{% block panel %}
+<div class="card narrow">
+  <h1>Access settings</h1>
+  <p class="muted">Choose whether uploading and downloading require a signed-in account (Admin or General user),
+     or are open to anyone. Anonymous activity is still logged — the user shows as <strong>N/A</strong> and the IP address is recorded.</p>
+  <form method="post">{% csrf_token %}
+    {% include "partials/form.html" %}
+    <button class="btn primary">Save</button>
+  </form>
+  {% if site.updated_by %}<p class="muted small">Last changed by {{ site.updated_by.username }} on {{ site.updated_at|date:"Y-m-d H:i" }}.</p>{% endif %}
+</div>
+{% endblock %}

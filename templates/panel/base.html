@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+{% with p=request.resolver_match.url_name ns=request.resolver_match.namespace %}
+<nav class="tabs">
+  <a href="{% url 'panel:dashboard' %}" {% if p == 'dashboard' %}class="active"{% endif %}>Dashboard</a>
+  <a href="{% url 'panel:files' %}" {% if p == 'files' %}class="active"{% endif %}>All files</a>
+  <a href="{% url 'panel:logs' %}" {% if p == 'logs' %}class="active"{% endif %}>Activity log</a>
+  <a href="{% url 'accounts:user_list' %}" {% if ns == 'accounts' %}class="active"{% endif %}>Users</a>
+  <a href="{% url 'panel:settings' %}" {% if p == 'settings' %}class="active"{% endif %}>Access settings</a>
+  <a href="{% url 'panel:cleanup' %}" {% if p == 'cleanup' %}class="active"{% endif %}>Cleanup</a>
+</nav>
+{% endwith %}
+{% block panel %}{% endblock %}
+{% endblock %}

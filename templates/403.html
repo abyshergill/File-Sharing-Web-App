@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block title %}Forbidden{% endblock %}
+{% block content %}<div class="card"><h1>Access denied</h1><p>You don’t have permission to view this page.</p><a class="btn" href="{% url 'sharing:home' %}">Home</a></div>{% endblock %}

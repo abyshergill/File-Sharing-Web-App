@@ -1,0 +1,27 @@
+{% extends "panel/base.html" %}{% block title %}Cleanup{% endblock %}
+{% block panel %}
+<div class="card narrow">
+  <h1>Clean up old files</h1>
+  <p class="muted">Permanently delete files (and their stored data) that were uploaded more than N days ago. Activity log entries are kept.</p>
+  <form method="get">
+    {% include "partials/form.html" %}
+    <button class="btn">Preview</button>
+  </form>
+</div>
+{% if preview %}
+<div class="card">
+  <h2>{{ preview.count }} file(s) older than {{ preview.days }} days · {{ preview.size|filesizeformat }}</h2>
+  {% if preview.count %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>File</th><th>Size</th><th>Uploaded</th><th>Uploaded by</th></tr></thead>
+      <tbody>{% for f in preview.sample %}<tr><td>{{ f.original_name }}</td><td>{{ f.size|filesizeformat }}</td><td>{{ f.created_at|date:"Y-m-d" }}</td><td>{{ f.uploader_display }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if preview.count > 10 %}<p class="muted small">…and {{ preview.count|add:"-10" }} more.</p>{% endif %}
+    <form method="post" data-confirm="Permanently delete {{ preview.count }} file(s)? This cannot be undone.">{% csrf_token %}
+      <input type="hidden" name="days" value="{{ preview.days }}"><input type="hidden" name="confirm" value="yes">
+      <button class="btn danger">Delete {{ preview.count }} file(s)</button>
+    </form>
+  {% else %}<p class="muted">Nothing to delete.</p>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

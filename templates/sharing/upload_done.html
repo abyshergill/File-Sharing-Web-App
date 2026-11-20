@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block title %}Uploaded{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>✅ Upload complete</h1>
+  <p>Save these codes — they are the only way to reach the files.</p>
+  <table class="table">
+    <thead><tr><th>File</th><th>Size</th><th>Share code</th><th>Link</th></tr></thead>
+    <tbody>
+    {% for f in files %}
+      {% url 'sharing:file_detail' f.share_code as path %}
+      <tr>
+        <td>{{ f.original_name }}</td>
+        <td>{{ f.size|filesizeformat }}</td>
+        <td><code>{{ f.share_code }}</code> <button class="btn tiny" data-copy="{{ f.share_code }}">Copy</button></td>
+        <td><button class="btn tiny" data-copy="{{ request.scheme }}://{{ request.get_host }}{{ path }}">Copy link</button></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <a class="btn" href="{% url 'sharing:upload' %}">Upload more</a>
+</div>
+{% endblock %}

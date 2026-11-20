@@ -1,0 +1,18 @@
+<div class="table-wrap"><table class="table">
+  <thead><tr><th>When</th><th>Action</th><th>File</th><th>Size</th><th>User</th><th>IP address</th><th>Details</th></tr></thead>
+  <tbody>
+  {% for log in logs %}
+    <tr>
+      <td title="{{ log.user_agent }}">{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+      <td><span class="pill {{ log.action }}">{{ log.get_action_display }}</span></td>
+      <td>{% if log.shared_file %}<a href="{% url 'sharing:file_detail' log.share_code %}">{{ log.file_name }}</a>{% else %}{{ log.file_name|default:"—" }}{% endif %}
+        {% if log.share_code %}<div class="muted small"><code>{{ log.share_code }}</code></div>{% endif %}</td>
+      <td>{% if log.file_size is not None %}{{ log.file_size|filesizeformat }}{% endif %}</td>
+      <td>{{ log.username }}</td>
+      <td><code>{{ log.ip_address|default:"unknown" }}</code></td>
+      <td class="small">{{ log.details }}</td>
+    </tr>
+  {% empty %}<tr><td colspan="7" class="muted">No activity.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>

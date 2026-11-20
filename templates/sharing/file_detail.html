@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}{{ file.original_name }}{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1 class="filename">{{ file.original_name }}</h1>
+  <dl class="meta">
+    <dt>Size</dt><dd>{{ file.size|filesizeformat }}</dd>
+    <dt>Type</dt><dd>{{ file.content_type|default:"unknown" }}</dd>
+    <dt>Uploaded</dt><dd>{{ file.created_at|date:"Y-m-d H:i" }} ({{ file.created_at|timesince }} ago)</dd>
+    <dt>Uploaded by</dt><dd>{{ file.uploader_display }}</dd>
+    <dt>Downloads</dt><dd>{{ file.download_count }}</dd>
+  </dl>
+  <a class="btn primary" href="{% url 'sharing:download' file.share_code %}">⬇️ Download</a>
+  <button class="btn" data-copy="{{ share_url }}">Copy share link</button>
+  {% if can_manage %}
+    <form method="post" action="{% url 'sharing:delete_file' file.pk %}" class="inline" data-confirm="Delete this file permanently?">{% csrf_token %}
+      <button class="btn danger">Delete</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

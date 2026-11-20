@@ -1,0 +1,20 @@
+{% extends "panel/base.html" %}{% block title %}Admin panel{% endblock %}
+{% block panel %}
+<div class="stats">
+  <div class="stat"><div class="num">{{ file_count }}</div><div class="label">Files stored</div></div>
+  <div class="stat"><div class="num">{{ storage_used|filesizeformat }}</div><div class="label">Storage used</div></div>
+  <div class="stat"><div class="num">{{ user_count }}</div><div class="label">Users ({{ admin_count }} admin)</div></div>
+  <div class="stat"><div class="num">{{ uploads_week }}</div><div class="label">Uploads, last 7 days</div></div>
+  <div class="stat"><div class="num">{{ downloads_week }}</div><div class="label">Downloads, last 7 days</div></div>
+  <div class="stat"><div class="num">{{ failed_week }}</div><div class="label">Invalid codes, last 7 days</div></div>
+</div>
+<div class="card">
+  <p>Uploads are <strong>{% if site_settings.public_upload %}open to everyone{% else %}restricted to signed-in users{% endif %}</strong>;
+     downloads are <strong>{% if site_settings.public_download %}open to anyone with a code{% else %}restricted to signed-in users{% endif %}</strong>.
+     <a href="{% url 'panel:settings' %}">Change</a></p>
+</div>
+<div class="card">
+  <div class="card-head"><h2>Recent activity</h2><a href="{% url 'panel:logs' %}">View all →</a></div>
+  {% include "panel/_log_table.html" with logs=recent_logs %}
+</div>
+{% endblock %}

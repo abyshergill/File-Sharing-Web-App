@@ -1,0 +1,28 @@
+{% extends "panel/base.html" %}{% load fileshare %}{% block title %}All files{% endblock %}
+{% block panel %}
+<div class="card">
+  <h1>All files</h1>
+  <form method="get" class="filters">{{ form.q }} <button class="btn">Search</button>
+    {% if request.GET.q %}<a href="{% url 'panel:files' %}">Clear</a>{% endif %}</form>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>File</th><th>Size</th><th>Uploaded</th><th>Uploaded by</th><th>Uploader IP</th><th>Downloads</th><th>Last download</th><th></th></tr></thead>
+    <tbody>
+    {% for f in page %}
+      <tr>
+        <td><a href="{% url 'sharing:file_detail' f.share_code %}">{{ f.original_name }}</a><div class="muted small"><code>{{ f.share_code }}</code></div></td>
+        <td>{{ f.size|filesizeformat }}</td>
+        <td>{{ f.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ f.uploader_display }}</td>
+        <td><code>{{ f.uploader_ip|default:"unknown" }}</code></td>
+        <td>{{ f.download_count }}</td>
+        <td>{{ f.last_downloaded_at|date:"Y-m-d H:i"|default:"never" }}</td>
+        <td><form method="post" action="{% url 'sharing:delete_file' f.pk %}" class="inline" data-confirm="Delete {{ f.original_name }}?">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn tiny danger">Delete</button></form></td>
+      </tr>
+    {% empty %}<tr><td colspan="8" class="muted">No files.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% pagination page query %}
+</div>
+{% endblock %}

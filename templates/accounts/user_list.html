@@ -1,0 +1,37 @@
+{% extends "panel/base.html" %}{% load fileshare %}{% block title %}Users{% endblock %}
+{% block panel %}
+<div class="card">
+  <div class="card-head"><h1>Users</h1>
+    <div><a class="btn primary" href="{% url 'accounts:user_create' %}?role=general">New general user</a>
+         <a class="btn" href="{% url 'accounts:user_create' %}?role=admin">New admin</a></div></div>
+  <form method="get" class="filters">
+    <input type="text" name="q" value="{{ q }}" placeholder="Username or email">
+    <select name="role"><option value="">All roles</option>{% for value, label in roles %}<option value="{{ value }}"{% if value == role %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    <button class="btn">Filter</button>
+  </form>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Files</th><th>Last login</th><th>Created by</th><th></th></tr></thead>
+    <tbody>
+    {% for u in page %}
+      <tr>
+        <td>{{ u.username }}{% if u.pk == user.pk %} <span class="muted small">(you)</span>{% endif %}</td>
+        <td>{{ u.email|default:"—" }}</td>
+        <td><span class="badge {{ u.role }}">{{ u.get_role_display }}</span></td>
+        <td>{% if u.is_active %}Active{% else %}<span class="muted">Disabled</span>{% endif %}</td>
+        <td>{{ u.file_count }}</td>
+        <td>{{ u.last_login|date:"Y-m-d H:i"|default:"never" }}</td>
+        <td>{{ u.created_by.username|default:"—" }}</td>
+        <td class="nowrap">
+          <a class="btn tiny" href="{% url 'accounts:user_edit' u.pk %}">Edit</a>
+          <a class="btn tiny" href="{% url 'accounts:user_set_password' u.pk %}">Password</a>
+          {% if u.pk != user.pk %}
+          <form method="post" action="{% url 'accounts:user_delete' u.pk %}" class="inline" data-confirm="Delete user {{ u.username }}? Their files will be kept.">{% csrf_token %}<button class="btn tiny danger">Delete</button></form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% pagination page query %}
+</div>
+{% endblock %}

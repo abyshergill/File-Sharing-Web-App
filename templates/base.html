@@ -1,0 +1,52 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}File Share{% endblock %} · File Share</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="{% url 'sharing:home' %}">📁 File Share</a>
+    <nav class="nav">
+      {% if user_can_upload %}<a href="{% url 'sharing:upload' %}">Upload</a>{% endif %}
+      <a href="{% url 'sharing:find' %}">Download</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'sharing:my_files' %}">My files</a>
+        {% if user.is_app_admin %}<a href="{% url 'panel:dashboard' %}">Admin panel</a>{% endif %}
+        <span class="who">{{ user.username }} <span class="badge {{ user.role }}">{{ user.get_role_display }}</span></span>
+        <a href="{% url 'accounts:password_change' %}">Password</a>
+        <form method="post" action="{% url 'accounts:logout' %}" class="inline">{% csrf_token %}<button class="link">Sign out</button></form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Sign in</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}<div class="msg {{ message.tags }}">{{ message }}</div>{% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="wrap footer">File Share · Django</footer>
+<script>
+document.addEventListener("click", function (e) {
+  var btn = e.target.closest("[data-copy]");
+  if (!btn) return;
+  navigator.clipboard.writeText(btn.getAttribute("data-copy")).then(function () {
+    var old = btn.textContent; btn.textContent = "Copied!";
+    setTimeout(function () { btn.textContent = old; }, 1500);
+  });
+});
+document.addEventListener("submit", function (e) {
+  var msg = e.target.getAttribute("data-confirm");
+  if (msg && !window.confirm(msg)) e.preventDefault();
+});
+</script>
+</body>
+</html>

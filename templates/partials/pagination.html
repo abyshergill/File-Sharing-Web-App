@@ -1,0 +1,15 @@
+{% if page.paginator.num_pages > 1 %}
+<nav class="pagination">
+  {% if page.has_previous %}
+    <a href="?{% if query %}{{ query }}&{% endif %}page=1">« First</a>
+    <a href="?{% if query %}{{ query }}&{% endif %}page={{ page.previous_page_number }}">‹ Prev</a>
+  {% endif %}
+  <span class="current">Page {{ page.number }} of {{ page.paginator.num_pages }} · {{ page.paginator.count }} total</span>
+  {% if page.has_next %}
+    <a href="?{% if query %}{{ query }}&{% endif %}page={{ page.next_page_number }}">Next ›</a>
+    <a href="?{% if query %}{{ query }}&{% endif %}page={{ page.paginator.num_pages }}">Last »</a>
+  {% endif %}
+</nav>
+{% elif page.paginator.count %}
+<p class="muted small">{{ page.paginator.count }} total</p>
+{% endif %}

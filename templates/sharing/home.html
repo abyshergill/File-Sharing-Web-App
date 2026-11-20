@@ -1,0 +1,34 @@
+{% extends "base.html" %}{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Share files with a link, not an email attachment.</h1>
+  <p class="lead">Upload a file and get a unique share code. Anyone you give the code (or link) to can download it.</p>
+  <div class="actions">
+    {% if user_can_upload %}<a class="btn primary" href="{% url 'sharing:upload' %}">Upload files</a>
+    {% else %}<a class="btn primary" href="{% url 'accounts:login' %}?next={% url 'sharing:upload' %}">Sign in to upload</a>{% endif %}
+  </div>
+</section>
+
+<div class="grid two">
+  <div class="card">
+    <h2>Have a share code?</h2>
+    <form method="post" action="{% url 'sharing:find' %}">{% csrf_token %}
+      {% include "partials/form.html" with form=code_form %}
+      <button class="btn">Find file</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>How it works</h2>
+    <ol>
+      <li><strong>Upload</strong> one or more files. Each gets its own unguessable share code.</li>
+      <li><strong>Share</strong> the code or link with whoever needs the file.</li>
+      <li><strong>Download</strong> by opening the link or entering the code.</li>
+    </ol>
+    <p class="muted small">
+      Uploads: {% if site_settings.public_upload %}open to everyone{% else %}signed-in users only{% endif %} ·
+      Downloads: {% if site_settings.public_download %}anyone with the code{% else %}signed-in users only{% endif %}.
+      Too many wrong codes from one address triggers a temporary lockout. Every upload and download is logged with its IP address.
+    </p>
+  </div>
+</div>
+{% endblock %}

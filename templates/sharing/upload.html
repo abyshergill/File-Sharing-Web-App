@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Upload{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>Upload files</h1>
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% include "partials/form.html" %}
+    <p class="muted small">Up to 20 files at once, max {{ max_mb }} MB each. Your IP address is recorded with the upload.</p>
+    <button class="btn primary" type="submit">Upload</button>
+  </form>
+</div>
+{% endblock %}
